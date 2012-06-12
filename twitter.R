@@ -8,12 +8,16 @@ library(tm)
 library(wordcloud)
 library(RColorBrewer)
 
-twData <- searchTwitter('#w8kcz', n=200)
+searchWord <- '#wwdc'
+removedWords <- c('wwdc', 'apple')
+
+twData <- searchTwitter(searchWord, n=200)
 tw.df <- twListToDF(twData)
 tw.corpus <- Corpus(DataframeSource(data.frame(tw.df$text)))
 tw.corpus <- tm_map(tw.corpus, removePunctuation)
 tw.corpus <- tm_map(tw.corpus, tolower)
-tw.corpus <- tm_map(tw.corpus, function(x) removeWords(x, stopwords("english","#w8kcz")))
+tw.corpus <- tm_map(tw.corpus, function(x) removeWords(x, stopwords("english")))
+tw.corpus <- tm_map(tw.corpus, function(x) removeWords(x, removedWords))
 tdm <- TermDocumentMatrix(tw.corpus)
 m <- as.matrix(tdm)
 v <- sort(rowSums(m),decreasing=TRUE)
